@@ -1,0 +1,76 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4 text-accent-blue">{{ event.title }} — {{ event.date }}</h2>
+<div class="mt-3 flex space-x-2">
+  <a class="px-4 py-2 bg-accent-green text-white rounded-lg hover:bg-green-700 transition duration-200 font-semibold" href="{{ url_for('sell_ticket', event_id=event.id) }}">Sell Ticket</a>
+  <a class="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg hover:bg-gray-600 transition duration-200 font-semibold" href="{{ url_for('export_event_full', event_id=event.id) }}">Export Event CSV</a>
+  <a class="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg hover:bg-gray-600 transition duration-200 font-semibold" href="{{ url_for('export_redemptions', event_id=event.id) }}">Export Redemptions</a>
+</div>
+<div class="grid grid-cols-1 gap-6 mt-6">
+
+  <div> {# Single Column for Tickets #}
+    <h3 class="text-xl font-semibold mb-3 text-accent-blue">Tickets</h3>
+    <div class="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700"> {# Container for tickets section #}
+
+    <!-- SEARCH BAR -->
+    <input id="ticketSearch"
+           onkeyup="filterTickets()"
+           class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full mb-4 rounded-lg focus:ring-accent-blue focus:border-accent-blue"
+           placeholder="Search by name or QR token..." />
+
+    <!-- Tickets List -->
+    <div id="ticketList" class="space-y-4">
+        {% for t in tickets %}
+            <div class="ticket-item p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700"
+                 data-name="{{ t.buyer_name|lower }}"
+                 data-qr="{{ t.qr_token|lower }}">
+
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-lg text-gray-100">{{ t.buyer_name }}</div>
+                        <div class="text-sm text-gray-400">
+                            {{ t.tier }} — <span class="text-accent-blue">{{ t.qr_token }}</span>
+                        </div>
+                        <div class="text-sm text-gray-300 mt-1">
+                            Price: <span class="text-accent-green">{{ t.price|rupee }}</span> | Balance: <span class="text-yellow-400">{{ calculate_balance(t.id)|rupee }}</span> {# Use calculate_balance here #}
+                        </div>
+                    </div>
+
+                    <div class="text-right flex space-x-3">
+                        <a class="text-accent-blue hover:underline font-medium"
+                           href="{{ url_for('ticket_view', qr_token=t.qr_token) }}">View</a>
+
+                        <a class="text-yellow-400 hover:underline font-medium"
+                           href="{{ url_for('edit_ticket', ticket_id=t.id) }}">Edit</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+          <div class="p-4 bg-gray-900 rounded-lg shadow-md border border-gray-700 text-gray-400">No tickets sold for this event yet.</div>
+        {% endfor %}
+    </div>
+
+    <!-- SEARCH FILTER SCRIPT -->
+    <script>
+    function filterTickets() {
+        let q = document.getElementById("ticketSearch").value.toLowerCase();
+        let items = document.getElementsByClassName("ticket-item");
+
+        for (let item of items) {
+            let name = item.dataset.name;
+            let qr = item.dataset.qr;
+            if (name.includes(q) || qr.includes(q)) {
+                item.style.display = "block";
+            } else {
+                item.style.display = "none";
+            }
+        }
+    }
+    </script>
+    </div>
+  </div>
+
+  {# The redemptions section is removed from here #}
+
+</div>
+{% endblock %}

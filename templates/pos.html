@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+{% block title %}Point of Sale{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4 text-accent-blue">Point of Sale</h2>
+<div class="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700 w-full mb-6">
+    <h3 class="text-xl font-semibold mb-3 text-gray-200">Available Products</h3>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-700">
+            <thead class="bg-gray-700">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Name</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Price</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Stock</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Quantity</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Action</th>
+                </tr>
+            </thead>
+            <tbody class="bg-gray-900 divide-y divide-gray-700">
+                {% for product in products %}
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-100">{{ product.name }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-accent-green">$​{{ product.price }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-300">{{ product.stock }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="number" min="1" max="{{ product.stock }}" value="1" class="quantity-input w-20 bg-gray-700 border border-gray-600 rounded text-gray-100 p-2" data-product-id="{{ product.id }}">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <button class="add-to-cart px-3 py-1 bg-accent-blue text-white rounded-md hover:bg-blue-600 transition duration-200" 
+                                data-product-id="{{ product.id }}" 
+                                data-product-name="{{ product.name }}" 
+                                data-product-price="{{ product.price }}">
+                            Add to Cart
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700 w-full">
+    <h2 class="text-xl font-semibold mb-3 text-gray-200">Cart</h2>
+    <ul id="cart-items" class="mb-4 text-gray-300 space-y-2"></ul>
+    <p class="text-lg font-bold text-gray-100">Total: <span class="text-accent-green" id="cart-total">$0.00</span></p>
+    <button id="checkout-button" class="mt-4 px-5 py-3 bg-accent-green text-white rounded-lg w-full hover:bg-green-700 transition duration-200 font-semibold">
+        Checkout
+    </button>
+
+    <script>
+        let cart = {};
+
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', () => {
+                const productId = button.dataset.productId;
+                const productName = button.dataset.productName;
+                const productPrice = parseFloat(button.dataset.productPrice);
+                const quantityInput = document.querySelector(`.quantity-input[data-product-id="${productId}"]`);
+                const quantity = parseInt(quantityInput.value);
+
+                if (quantity > 0) {
+                    if (cart[productId]) {
+                        cart[productId].quantity += quantity;
+                    } else {
+                        cart[productId] = { name: productName, price: productPrice, quantity: quantity };
+                    }
+                    updateCartDisplay();
+                }
+            });
+        });
+
+        function updateCartDisplay() {
+            const cartItemsElement = document.getElementById('cart-items');
+            cartItemsElement.innerHTML = '';
+            let total = 0;
+
+            for (const productId in cart) {
+                const item = cart[productId];
+                const li = document.createElement('li');
+                li.textContent = `${item.name} x ${item.quantity} = $${(item.price * item.quantity).toFixed(2)}`;
+                cartItemsElement.appendChild(li);
+                total += item.price * item.quantity;
+            }
+            document.getElementById('cart-total').textContent = total.toFixed(2);
+        }
+
+        document.getElementById('checkout-button').addEventListener('click', () => {
+            alert('Checkout functionality not yet implemented. Cart contents: ' + JSON.stringify(cart));
+            cart = {}; // Clear cart after checkout attempt
+            updateCartDisplay();
+        });
+    </script>
+{% endblock %}

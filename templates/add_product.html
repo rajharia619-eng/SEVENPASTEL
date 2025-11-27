@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block title %}Add Product{% endblock %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4 text-accent-blue">Add New Product</h2>
+<div class="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700 w-full max-w-md mx-auto">
+    <form method="post">
+        <label class="block text-sm font-medium mb-1 text-gray-300">Product Name</label>
+        <input type="text" id="name" name="name" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue mb-3" required>
+
+        <label class="block text-sm font-medium mb-1 text-gray-300">Price (₹)</label>
+        <input type="number" id="price" name="price" step="0.01" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue mb-3" required>
+
+        <label class="block text-sm font-medium mb-1 text-gray-300">Stock</label>
+        <input type="number" id="stock" name="stock" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue mb-5" required>
+
+        <button type="submit" class="px-5 py-3 bg-accent-green text-white rounded-lg w-full hover:bg-green-700 transition duration-200 font-semibold">Add Product</button>
+    </form>
+</div>
+{% endblock %}

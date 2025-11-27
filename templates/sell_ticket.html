@@ -1,0 +1,21 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4 text-accent-blue">Sell Ticket — {{ event.title }}</h2>
+<div class="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700 w-full max-w-md mx-auto">
+  <form method="post">
+    <label class="block text-sm font-medium mb-1 text-gray-300">Buyer Name</label>
+    <input name="buyer_name" type="text" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue mb-3" placeholder="e.g., Jane Doe" />
+
+    <label class="block text-sm font-medium mb-1 text-gray-300">Ticket Tier</label>
+    <input name="tier" type="text" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue mb-3" placeholder="e.g., VIP, General Admission" />
+
+    <label class="block text-sm font-medium mb-1 text-gray-300">Price (₹)</label>
+    <input name="price" type="number" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue mb-3" value="0" />
+
+    <label class="block text-sm font-medium mb-1 text-gray-300">Initial Redeemable Balance (₹, if different from price)</label>
+    <input name="redeemable" type="number" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue mb-5" placeholder="Defaults to price if empty" />
+
+    <button class="px-5 py-3 bg-accent-green text-white rounded-lg w-full hover:bg-green-700 transition duration-200 font-semibold">Sell Ticket</button>
+  </form>
+</div>
+{% endblock %}

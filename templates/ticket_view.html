@@ -1,0 +1,55 @@
+{% extends 'layout.html' %}
+{% block content %}
+<h2 class="text-2xl font-bold mb-4 text-accent-blue">Ticket {{ ticket.id }} — {{ ticket.buyer_name }}</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
+  <div> {# Left Column: Ticket Details and Redeem Form #}
+    <div class="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700 w-full">
+      <div class="mb-2 text-gray-300">Tier: <span class="font-medium text-gray-100">{{ ticket.tier }}</span></div>
+      <div class="mb-2 text-gray-300">Price: <span class="font-medium text-accent-green">{{ ticket.price|rupee }}</span></div>
+      <div class="mb-4 text-gray-300">Redeemable Balance: <span class="font-bold text-yellow-400">{{ calculate_balance(ticket.id)|rupee }}</span></div>
+      <form action="{{ url_for('redeem', qr_token=ticket.qr_token) }}" method="post" class="mt-4">
+        <label class="block text-sm font-medium mb-1 text-gray-300">Amount to redeem</label>
+        <input name="amount" type="number" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue" />
+        <label class="block text-sm font-medium mt-3 mb-1 text-gray-300">Reason</label>
+        <input name="reason" class="border border-gray-600 bg-gray-900 text-gray-100 p-3 w-full rounded-lg focus:ring-accent-blue focus:border-accent-blue" />
+        <button class="mt-5 px-5 py-3 bg-accent-indigo text-white rounded-lg w-full hover:bg-indigo-700 transition duration-200 font-semibold">Redeem</button>
+      </form>
+    </div>
+  </div>
+
+  <div> {# Right Column: Redemption History #}
+    <h3 class="text-xl font-semibold mb-3 text-accent-blue">Redemption History</h3>
+
+    {% set logs = ticket.transactions|selectattr("type", "equalto", "redeem")|list %}
+
+    {% if logs %}
+        <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+            {% for r in logs %}
+                <div class="p-4 bg-gray-800 rounded-lg shadow-md border border-gray-700 flex justify-between items-center">
+                    <div>
+                        <div class="text-sm text-gray-300 font-medium">
+                            Redeemed: <span class="text-red-400">₹{{ r.amount }}</span>
+                        </div>
+                        <div class="text-xs text-gray-400">
+                            Reason: {{ r.reason or '—' }}
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">
+                            {{ r.processed_at }}
+                        </div>
+                    </div>
+                    <form method="post" action="{{ url_for('delete_redemption', tx_id=r.id) }}" onsubmit="return confirm('Are you sure you want to undo this redemption?');">
+                        <button class="text-red-500 hover:underline font-medium">Undo</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="p-4 bg-gray-800 rounded-lg shadow-md border border-gray-700 text-gray-400">
+            No redemptions for this ticket yet.
+        </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

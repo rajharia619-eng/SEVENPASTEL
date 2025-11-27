@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<h2 class="text-xl font-semibold mb-4">Edit Ticket</h2>
+
+<form method="post" class="bg-white p-4 rounded shadow w-96">
+
+  <label class="block text-sm">Buyer Name</label>
+  <input
+    type="text"
+    name="buyer_name"
+    value="{{ ticket.buyer_name }}"
+    class="border p-2 w-full"
+    required
+  >
+
+  <label class="block text-sm mt-3">Tier</label>
+  <input
+    type="text"
+    name="tier"
+    value="{{ ticket.tier }}"
+    class="border p-2 w-full"
+    required
+  >
+
+  <label class="block text-sm mt-3">Price</label>
+  <input
+    type="number"
+    name="price"
+    value="{{ ticket.price }}"
+    class="border p-2 w-full"
+    required
+  >
+
+  <label class="block text-sm mt-3">Redeemable Balance</label>
+  <input
+    type="number"
+    name="redeemable"
+    value="{{ ticket.redeemable_issued }}"
+    class="border p-2 w-full"
+    required
+  >
+
+  <button class="mt-4 px-3 py-2 bg-indigo-600 text-white rounded">
+    Save Changes
+  </button>
+</form>
+
+{% endblock %}
