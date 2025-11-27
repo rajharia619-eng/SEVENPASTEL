@@ -20,14 +20,10 @@ except Exception:
 db_url = os.environ.get("DATABASE_URL")
 
 if db_url:
-    # Render gives "postgresql://"
-    # SQLAlchemy needs "postgresql+psycopg2://"
-    if db_url.startswith("postgresql://"):
-        db_url = db_url.replace(
-            "postgresql://",
-            "postgresql+psycopg2://",
-            1
-        )
+    # Convert Render URL to SQLAlchemy-compatible form
+    # Render gives:       postgresql://username:pass@host/db
+    # SQLAlchemy wants:   postgresql+psycopg2://username:pass@host/db
+    db_url = db_url.replace("postgresql://", "postgresql+psycopg2://")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
