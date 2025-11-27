@@ -35,10 +35,13 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 db = SQLAlchemy(app)
 
 
-# Run create_all only once
-@app.before_first_request
-def create_tables():
-    db.create_all()
+# Run create_all safely only once on first request
+@app.before_request
+def create_tables_once():
+    if not getattr(app, '_tables_created', False):
+        db.create_all()
+        app._tables_created = True
+
 
 # Models
 class Event(db.Model):
