@@ -19,19 +19,25 @@ except Exception:
 
 db_url = os.environ.get("DATABASE_URL")
 
-# Render sometimes gives postgresql:// but SQLAlchemy requires postgres://
-if db_url and db_url.startswith("postgresql://"):
-    db_url = db_url.replace("postgresql://", "postgres://", 1)
+if db_url:
+    # Render gives "postgresql://"
+    # SQLAlchemy needs "postgresql+psycopg2://"
+    if db_url.startswith("postgresql://"):
+        db_url = db_url.replace(
+            "postgresql://",
+            "postgresql+psycopg2://",
+            1
+        )
 
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Prevent idle connection timeout (important for Render)
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True
 }
 
 db = SQLAlchemy(app)
+
 
 # Run create_all only once
 @app.before_first_request
