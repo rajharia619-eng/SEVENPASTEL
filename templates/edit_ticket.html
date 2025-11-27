@@ -1,49 +1,65 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<h2 class="text-xl font-semibold mb-4">Edit Ticket</h2>
+<h2 class="text-2xl font-bold mb-6 text-accent-blue tracking-wide">
+  Edit Ticket – {{ ticket.buyer_name }}
+</h2>
 
-<form method="post" class="bg-white p-4 rounded shadow w-96">
+<div class="bg-gray-900 p-6 rounded-2xl shadow-xl border border-gray-700 w-full max-w-lg">
+  <form method="post">
 
-  <label class="block text-sm">Buyer Name</label>
-  <input
-    type="text"
-    name="buyer_name"
-    value="{{ ticket.buyer_name }}"
-    class="border p-2 w-full"
-    required
-  >
+    <!-- Buyer Name -->
+    <label class="block text-sm font-medium text-gray-300 mb-1">Buyer Name</label>
+    <input
+      type="text"
+      name="buyer_name"
+      value="{{ ticket.buyer_name }}"
+      class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 
+             focus:outline-none focus:ring-2 focus:ring-accent-blue mb-4"
+      required
+    >
 
-  <label class="block text-sm mt-3">Tier</label>
-  <input
-    type="text"
-    name="tier"
-    value="{{ ticket.tier }}"
-    class="border p-2 w-full"
-    required
-  >
+    <!-- Tier -->
+    <label class="block text-sm font-medium text-gray-300 mb-1">Tier</label>
+    <input
+      type="text"
+      name="tier"
+      value="{{ ticket.tier }}"
+      class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 
+             focus:outline-none focus:ring-2 focus:ring-accent-blue mb-4"
+      required
+    >
 
-  <label class="block text-sm mt-3">Price</label>
-  <input
-    type="number"
-    name="price"
-    value="{{ ticket.price }}"
-    class="border p-2 w-full"
-    required
-  >
+    <!-- Price -->
+    <label class="block text-sm font-medium text-gray-300 mb-1">Price (₹)</label>
+    <input
+      type="number"
+      name="price"
+      value="{{ ticket.price }}"
+      class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 
+             focus:outline-none focus:ring-2 focus:ring-accent-blue mb-4"
+      required
+    >
 
-  <label class="block text-sm mt-3">Redeemable Balance</label>
-  <input
-    type="number"
-    name="redeemable"
-    value="{{ ticket.redeemable_issued }}"
-    class="border p-2 w-full"
-    required
-  >
+    <!-- Redeemable Balance -->
+    <label class="block text-sm font-medium text-gray-300 mb-1">Redeemable Balance (₹)</label>
+    <input
+      type="number"
+      name="redeemable"
+      value="{{ ticket.redeemable_issued }}"
+      class="w-full p-3 rounded-lg bg-gray-800 text-gray-100 border border-gray-600 
+             focus:outline-none focus:ring-2 focus:ring-accent-blue mb-6"
+      required
+    >
 
-  <button class="mt-4 px-3 py-2 bg-indigo-600 text-white rounded">
-    Save Changes
-  </button>
-</form>
+    <!-- Submit -->
+    <button
+      class="w-full py-3 rounded-lg bg-accent-indigo text-white font-semibold 
+             hover:bg-indigo-700 transition duration-200 shadow">
+      Save Changes
+    </button>
+
+  </form>
+</div>
 
 {% endblock %}
