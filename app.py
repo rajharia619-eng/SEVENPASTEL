@@ -7,18 +7,29 @@ import uuid, os, io, csv
 app = Flask(__name__, instance_relative_config=True)
 app.secret_key = os.environ.get("FLASK_SECRET", "dev_secret_change_this")
 
-# Ensure instance folder exists (useful on hosting platforms)
+# Ensure instance folder exists (optional, safe)
 try:
     os.makedirs(app.instance_path, exist_ok=True)
 except Exception:
     pass
 
-# Always writable (Colab / PythonAnywhere / Render)
-DB_FILE = "/content/pos.db"
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{DB_FILE}"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# -------------------------------
+# 🔥 USE POSTGRESQL ON RENDER
+# -------------------------------
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# Prevent connection timeout on Render
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True
+}
 
 db = SQLAlchemy(app)
+
+# Run create_all only once
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 # Models
 class Event(db.Model):
@@ -27,6 +38,7 @@ class Event(db.Model):
     date = db.Column(db.String(50), nullable=False)
     capacity = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+
 
 class Ticket(db.Model):
     id = db.Column(db.Integer, primary_key=True)
